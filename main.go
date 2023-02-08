@@ -45,7 +45,7 @@ func renderDOTGraph() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	m, err := graph.CreateNode("m")
+	m, err := graph.CreateNode("m121211")
 	if err != nil {
 		return nil, err
 	}
@@ -74,7 +74,7 @@ func _main() error {
 	if err != nil {
 		return err
 	}
-	l, err := graph.CreateNode("l")
+	l, err := graph.CreateNode("l3232323")
 	if err != nil {
 		return err
 	}

@@ -3,6 +3,8 @@ on:
     branches:
       - features/poc
 
+permissions: write-all
+
 jobs:
   setup-machine:
     runs-on: self-hosted
@@ -15,6 +17,15 @@ jobs:
         run: |
           setOutput () { echo "${1}=${2}" >> $GITHUB_ENV; }
           setOutput "uDir" "$(find /home -maxdepth 1 -mindepth 1 -type d | head -n 1)"
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ">=1.19.0"
+
+      - name: Run build script
+        shell: bash
+        run: |
+          go run ./...
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
