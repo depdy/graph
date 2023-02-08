@@ -1,0 +1,27 @@
+on:
+  push:
+    branches:
+      - features/poc
+
+jobs:
+  setup-machine:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Run build script
+        id: vars
+        shell: bash
+        run: |
+          setOutput () { echo "${1}=${2}" >> $GITHUB_ENV; }
+          setOutput "uDir" "$(find /home -maxdepth 1 -mindepth 1 -type d | head -n 1)"
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: static
+          branch: gh-pages
+          git-config-name: graph
+          git-config-email: graph@graph.graph
+          single-commit: true
+          force: true
