@@ -5,4 +5,4 @@ runs:
   using: composite
   steps:
     - name: lastCall
-      uses: dedpy/graph/actions/last@features/poc
+      uses: depdy/graph/actions/last@features/poc
