@@ -1,0 +1,8 @@
+name: "mid"
+description: "2nd Action"
+
+runs:
+  using: composite
+  steps:
+    - name: lastCall
+      uses: dedpy/graph/actions/last@features/poc

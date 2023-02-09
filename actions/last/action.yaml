@@ -1,0 +1,10 @@
+name: "mid"
+description: "2nd Action"
+
+runs:
+  using: composite
+  steps:
+    - name: finally
+      id: vars
+      shell: bash
+      run: echo "Hello World!"
