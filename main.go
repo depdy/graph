@@ -1,32 +1,16 @@
-// package main
-
-// import (
-// 	"fmt"
-// 	"log"
-
-// 	"github.com/awalterschulze/gographviz"
-// )
-
-// func main() {
-// 	graphAst, _ := gographviz.ParseString(`digraph G {}`)
-// 	graph := gographviz.NewGraph()
-// 	if err := gographviz.Analyse(graphAst, graph); err != nil {
-// 		panic(err)
-// 	}
-// 	graph.AddNode("G", "a", nil)
-// 	graph.AddNode("G", "b", nil)
-// 	graph.AddEdge("a", "b", true, nil)
-
-// 	fmt.Println(graph.String())
-// 	log.Fatal("")
-// }
 package main
 
 import (
 	"bytes"
 	"log"
+	"os"
+	"path/filepath"
+	"regexp"
 
 	"github.com/goccy/go-graphviz"
+	"gopkg.in/yaml.v2"
+
+	"github.com/depdy/graph/github"
 )
 
 func renderDOTGraph() ([]byte, error) {
@@ -95,7 +79,67 @@ func _main() error {
 }
 
 func main() {
-	if err := _main(); err != nil {
+	// if err := _main(); err != nil {
+	// 	log.Fatalf("%+v", err)
+	// }
+	files, err := readFiles(".", ".*[.]y[a]*ml")
+	if err != nil {
 		log.Fatalf("%+v", err)
 	}
+
+	repo, err := NewRepo(".")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	r, err := repo.Show("88d21d3", "actions/last/action.yaml")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer log.Fatal(r.Close())
+
+	var a github.Xaction
+	if err := yaml.NewDecoder(r).Decode(&a); err != nil {
+		log.Fatal(err)
+	}
+
+	tm, err := github.NewRepository(files)
+	if err != nil {
+		log.Fatalf("%+v", err)
+	}
+	// It takes a path and a regex pattern, and returns a list of files that match the pattern
+	_ = tm
+
+}
+
+func getModels() {
+
+}
+
+func readFiles(path, pattern string) ([]string, error) {
+	r, err := regexp.Compile(pattern)
+	if err != nil {
+		return nil, err
+	}
+
+	var files []string
+	err = filepath.Walk(path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.IsDir() {
+			if info.Name() == ".git" {
+				return filepath.SkipDir
+			}
+			return nil
+		}
+		if !r.MatchString(info.Name()) {
+			return nil
+		}
+
+		files = append(files, path)
+		return nil
+	})
+
+	return files, err
 }
